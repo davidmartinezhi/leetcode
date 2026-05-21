@@ -1,0 +1,158 @@
+# Matrix Traversals Cheatsheet
+
+## Row by Row
+
+The most basic traversal. Outer loop controls rows, inner loop controls columns. You visit every element left to right, top to bottom.
+
+```cpp
+for(int i = 0; i < n; i++)
+    for(int j = 0; j < m; j++)
+        // matrix[i][j]
+```
+
+## Column by Column
+
+Same idea but flipped. Outer loop controls columns, inner loop controls rows. You visit top to bottom, then move to the next column.
+
+```cpp
+for(int j = 0; j < m; j++)
+    for(int i = 0; i < n; i++)
+        // matrix[i][j]
+```
+
+## Diagonal (top-left to bottom-right)
+
+Each diagonal has a constant value of i - j. Start from the top row and left column. The key insight is that elements on the same diagonal share the same difference between row and column indices.
+
+```cpp
+// upper diagonals (starting from top row)
+for(int d = 0; d < m; d++)
+    for(int i = 0, j = d; i < n && j < m; i++, j++)
+        // matrix[i][j]
+
+// lower diagonals (starting from left column)
+for(int d = 1; d < n; d++)
+    for(int i = d, j = 0; i < n && j < m; i++, j++)
+        // matrix[i][j]
+```
+
+## Anti-diagonal (top-right to bottom-left)
+
+Each anti-diagonal has a constant value of i + j. Elements that sum to the same value are on the same anti-diagonal.
+
+```cpp
+for(int sum = 0; sum < n + m - 1; sum++)
+    for(int i = max(0, sum - m + 1); i < min(n, sum + 1); i++)
+        // matrix[i][sum - i]
+```
+
+## Spiral (outside to inside)
+
+Shrink the boundaries as you complete each layer. You maintain 4 boundaries (top, bottom, left, right) and walk each edge in order: right across top, down right side, left across bottom, up left side. After each edge, shrink that boundary inward.
+
+```cpp
+int top = 0, bottom = n-1, left = 0, right = m-1;
+
+while(top <= bottom && left <= right){
+    // go right
+    for(int j = left; j <= right; j++)
+        // matrix[top][j]
+    top++;
+
+    // go down
+    for(int i = top; i <= bottom; i++)
+        // matrix[i][right]
+    right--;
+
+    // go left
+    if(top <= bottom)
+        for(int j = right; j >= left; j--)
+            // matrix[bottom][j]
+    bottom--;
+
+    // go up
+    if(left <= right)
+        for(int i = bottom; i >= top; i--)
+            // matrix[i][left]
+    left++;
+}
+```
+
+## Layer by Layer (for square matrices)
+
+Used in rotation problems. You process concentric rectangular layers from outside in. The outer loop controls which layer, the inner loop processes elements in that layer.
+
+```cpp
+for(int layer = 0; layer < n/2; layer++)
+    for(int j = layer; j < n-1-layer; j++)
+        // process 4 elements per iteration using layer and j
+```
+
+The key: n/2 gives you the number of layers. For a 4x4 matrix you have 2 layers, for 5x5 you have 2 layers (center element stays).
+
+## BFS/DFS on a Grid
+
+Treat each cell as a node with 4 neighbors (up, down, left, right). This is the most important traversal for interview problems like flood fill, number of islands, shortest path in grid.
+
+```cpp
+int dirs[4][2] = {{0,1},{0,-1},{1,0},{-1,0}};
+
+// BFS from a starting cell
+queue<pair<int,int>> q;
+q.push({start_i, start_j});
+visited[start_i][start_j] = true;
+
+while(!q.empty()){
+    auto [i, j] = q.front();
+    q.pop();
+    for(auto [di, dj] : dirs){
+        int ni = i + di, nj = j + dj;
+        if(ni >= 0 && ni < n && nj >= 0 && nj < m && !visited[ni][nj]){
+            visited[ni][nj] = true;
+            q.push({ni, nj});
+        }
+    }
+}
+```
+
+The direction array trick: instead of writing 4 separate if statements for up/down/left/right, you store the offsets in an array and loop through them. This is cleaner and scales to 8 directions (add diagonals) easily.
+
+## Matrix Transformations
+
+Three building blocks that combine to produce any rotation:
+
+Transpose: swap rows and columns. Element (i,j) goes to (j,i).
+
+```cpp
+for(int i = 0; i < n; i++)
+    for(int j = i; j < n; j++)
+        swap(matrix[i][j], matrix[j][i]);
+```
+
+Reverse horizontal: reverse each row. Like putting a mirror on the right side.
+
+```cpp
+for(int i = 0; i < n; i++)
+    reverse(matrix[i].begin(), matrix[i].end());
+```
+
+Reverse vertical: reverse the order of rows. Like putting a mirror on the bottom.
+
+```cpp
+for(int i = 0; i < n/2; i++)
+    swap(matrix[i], matrix[n-1-i]);
+```
+
+Combining them:
+
+- Rotate 90 clockwise = transpose + reverse horizontal
+- Rotate 90 counter-clockwise = transpose + reverse vertical
+- Rotate 180 = reverse horizontal + reverse vertical
+
+## Quick Reference
+
+- Row/column: basic, use for simple scans
+- Diagonal/anti-diagonal: elements share i-j or i+j
+- Spiral: shrink 4 boundaries after each edge
+- Layer: concentric rectangles, used for rotation
+- BFS/DFS: treat grid as graph, use for connectivity and shortest path

@@ -1,0 +1,76 @@
+# Notes
+
+## auto
+
+auto es parte de la libreria estandar desde hace mas de 10 años y se usa para inferir el valor de una variable
+
+```cpp
+for(auto num : nums) {          // copia cada elemento
+for(auto& num : nums) {         // referencia, evita copiar
+for(const auto& num : nums) {   // referencia constante, no modificable
+```
+
+```cpp
+auto it = nums_set.find(5);
+
+if(it != nums_set.end()){
+    // lo encontro, *it te da el valor (5 en este caso)
+} else {
+    // no existe en el set
+}
+```
+
+## Vectors
+
+This is how we create vectors of a certain length with a certain value in every index
+
+```cpp
+vector<int> ans(n, 1);
+```
+
+This is how we copy a vector into another
+
+```cpp
+vector<int> original = {1,2,3,4};
+vector<int> copy(original.begin(), original.end());
+```
+
+or
+
+```cpp
+vector<int> copy(original);
+```
+
+# unordered_set
+```cpp
+unordered_set<int> s;
+
+s.insert(5);           // agregar
+s.erase(5);            // borrar un elemento especifico
+s.count(5);            // 1 si existe, 0 si no
+s.find(5);             // iterator al elemento, o s.end() si no existe
+s.contains(5);         // true/false (C++20)
+s.size();              // numero de elementos
+s.empty();             // true si esta vacio
+s.clear();             // vaciar todo
+```
+
+## General
+
+Para poder ver que algoritmo utilizar en DP en arrays.
+
+Basicamente en cada paso te preguntas "que puede pasar con el resultado despues de esta operacion?" y eso te guia al approach correcto.
+
+En suma: el resultado solo puede subir o bajar. Si baja de 0, ya sabes que te conviene reiniciar. Solo hay un estado que importa (la suma actual). Por eso Kadane es tan simple. mas subarray
+
+En multiplicacion: el resultado puede subir, bajar, flipear de signo, o morir en 0. Un estado no es suficiente porque el min de hoy puede ser el max de manana. Necesitas dos estados (min y max). max product subarray
+
+
+En knapsack: cada item puede estar incluido o no, y cada decision afecta cuanta capacidad te queda. El estado es la capacidad restante, y por cada item evaluas si incluirlo mejora o empeora tu solucion para esa capacidad. 
+
+Entonces si, antes de elegir un algoritmo, es importante analizar los posibles estados de la operacion en cada paso. Si solo hay un estado relevante, probablemente es algo tipo Kadane. Si hay multiples estados que interactuan (como signo positivo/negativo), necesitas trackear mas. Si hay una restriccion externa (capacidad, presupuesto), probablemente es knapsack
+
+Es el mismo pensamiento que al hacer una recursion, es importante saber en cada paso, en que posible
+estado es que puedo estar. Y segun el estado es el comportamiento que queremos.
+
+
