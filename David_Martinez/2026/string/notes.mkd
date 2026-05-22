@@ -1,0 +1,64 @@
+# C++ Strings Cheatsheet
+
+## Char ↔ Int
+```cpp
+// char -> int
+int d  = c - '0';    // digit char to int:  '7' -> 7
+int i  = c - 'a';    // lowercase to index: 'a'->0 ... 'z'->25
+int i  = c - 'A';    // uppercase to index: 'A'->0 ... 'Z'->25
+
+// int -> char
+char c = d + '0';    // digit int to char:  7 -> '7'
+char c = i + 'a';    // index to lowercase: 0->'a' ... 25->'z'
+char c = i + 'A';    // index to uppercase: 0->'A' ... 25->'Z'
+```
+
+## String ↔ Int
+```cpp
+int n    = stoi(s);          // "123" -> 123 (handles sign, skips spaces)
+string s = to_string(n);     // 123 -> "123"
+```
+
+## Char checks (`<cctype>`)
+```cpp
+isalpha(c)   isdigit(c)   isalnum(c)   isspace(c)
+islower(c)   isupper(c)
+tolower(c)   toupper(c)   // return new value, don't modify in place
+```
+
+## Overflow guard (check BEFORE *10)
+```cpp
+// 7 and 8 = last digit of INT_MAX (...647) and INT_MIN (...648)
+if (res > INT_MAX/10 || (res == INT_MAX/10 && d > 7)) // pos overflow
+if (res < INT_MIN/10 || (res == INT_MIN/10 && d < -8)) // neg overflow
+res = res * 10 + d;
+```
+
+## Substring
+```cpp
+// substr: takes INDICES (len = how many chars, not end index)
+s.substr(2, 3)       // 3 chars starting at index 2
+s.substr(2)          // index 2 to end
+
+// iterators: use the string CONSTRUCTOR, not substr
+string(s.begin(), s.begin() + 3)   // first 3 chars
+string(s.begin() + 2, s.end())     // index 2 to end
+```
+
+## Access & iterate
+```cpp
+s[i]   s.size()   s.empty()
+s.front()   // first char, same as s[0]
+s.back()    // last char,  same as s[s.size()-1]
+
+for (char c : s)        // by value
+for (char& c : s)       // by reference (modify)
+int l = 0, r = s.size()-1;   // two pointers
+```
+
+## Common ops
+```cpp
+s += c;            s.push_back(c);     s.pop_back();
+s.find("ab")       // index or string::npos
+reverse(s.begin(), s.end());   // <algorithm>
+```
