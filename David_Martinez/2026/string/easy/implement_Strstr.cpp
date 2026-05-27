@@ -89,3 +89,11 @@ public:
         return -1;
     }
 }; // 15 min, i need to see the optimized version how to do it
+
+/*
+Este problema si lo saque muy velozmente, siento que me llego de manera intuitiva la solucion
+Cada vez me siento mas comodo tirando codigo, recuerdo el syntax mejor y que es lo que existe.
+
+Definitivamennte aunque no fuera a aplicar a trabajos, el hacer leetcode si tiene grandes
+ventajas mentales
+*/

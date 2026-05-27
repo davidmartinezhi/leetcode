@@ -93,5 +93,41 @@ public:
         return shortest;
         
     }
+
+    string longestCommonPrefixVertical(vector<string>& strs) {
+        
+        int n = strs.size();
+        
+        // edge case: see if array is empty
+        if(n == 0) return "";
+        
+        // traverse all the characters of the first word
+        for(int i = 0; i < strs[0].size(); i++){
+            
+            // get char to compare
+            char c = strs[0][i];
+            
+            // traverse all the other words
+            for(int j = 1; j < n; j++){
+                // base cases:
+                // curr word is shorter than initial word
+                // curr word char is different from the base char
+                if(i >= strs[j].size() || strs[j][i] != c){
+                    return strs[j].substr(0, i);
+                }
+            }
+            
+        }
+        return strs[0];  // if the original word is the longest common prefix      
+    }
 };
 // 25 min
+/*
+El approch vertical hace muchisimo sentido y nunca se me habia ocurrido
+si considero muy interesante la idea de haberlo visto todo como una matrix la cual
+vamos escaneando columna por columna, no lo habia pensado pero si esta muy interesante.
+
+Probablemente me sea muy util para otros problemas, el poder pensar de este tipo de recorrido igual
+
+La complejidad del vertical es la misma pero es mas agresivo en cuanto en que etapa encontrar fallos
+*/
