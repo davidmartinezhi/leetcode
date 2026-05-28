@@ -55,29 +55,47 @@ public:
         if(n == 1) return s;
         
         // set variables
-        string longestPalindrome = "";
+        //string longestPalindrome = "";
+        int bestStart = 0;
+        int bestLen = 1;
         
         // traverse the string
         for(int i = 0; i < n; i++){
-            longestPalindrome = checkLongest(s, longestPalindrome, i, i);
-            longestPalindrome = checkLongest(s, longestPalindrome, i, i+1);
+            //checkLongest(s, longestPalindrome, i, i);
+            //checkLongest(s, longestPalindrome, i, i+1);
+            expand(s, i, i, bestStart, bestLen);
+            expand(s, i, i+1, bestStart, bestLen);
         }
+
+        return s.substr(bestStart, bestLen);
         
-        return longestPalindrome;// 7 min left and im stuck on how to get the sbtr but all the logic is there. finished with 6 min left
+        //return longestPalindrome;// 7 min left and im stuck on how to get the sbtr but all the logic is there. finished with 6 min left
     }    
     
-    string checkLongest(string & s, string currentLongest, int left, int right){
+    void checkLongest(string & s, string& currentLongest, int left, int right){
         int n = s.size();
-        string longest = currentLongest;
         while(left >= 0 && right < n && s[left] == s[right]){
             int current_len = right - left + 1;
-            if(current_len > longest.size()){
-                longest = s.substr(left, current_len);
+            if(current_len > currentLongest.size()){
+                currentLongest = s.substr(left, current_len);
             }
             left--;
             right++;
         }
-        return longest;   
+        return;   
+    }
+
+    void expand(string & s, int left, int right, int & bestStart, int & bestLen){
+        int n = s.size();
+        while(left >= 0 && right < n && s[left] == s[right]){
+            int current_len = right - left + 1;
+            if(current_len > bestLen){
+                bestStart = left;
+                bestLen = current_len;
+            }
+            left--;
+            right++;
+        }
     }
 }; // finished with 1+ min left using a helper function
 
