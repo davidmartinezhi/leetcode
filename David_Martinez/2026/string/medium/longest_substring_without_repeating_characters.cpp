@@ -108,7 +108,7 @@ public:
             longestSubstr = max(longestSubstr, end-start+1);
         }
         
-        return longestSubstr; // 45-27 min
+        return longestSubstr; 
         
     }
 };// 21 minutes checking with examples and all
