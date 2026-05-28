@@ -121,4 +121,7 @@ el usar el for loop para seguir el traversal hasta llegar a un estado invalido, 
 invalido ahora si hacer el while loop hasta regresar al caso valido o que el primer pointer alcance al segundo
 muy buena solucion y muy buen trabajo
 
+
+Igual puedo estar guardando la ultima vez que se vio un char y saltar a esa posicion, en lugar de hacer
+todo el traversal.
 */
