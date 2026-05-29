@@ -22,3 +22,7 @@ After every brute force, before coding ask:
 3. What update rule keeps the "optimal decision still possible"
     invariant?
 
+-----
+
+LRU cache
+https://leetcode.com/problems/lru-cache/description/
