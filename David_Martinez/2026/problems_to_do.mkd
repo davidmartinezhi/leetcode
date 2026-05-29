@@ -1,0 +1,24 @@
+# El meta-patrón: "greedy con estado mínimo"
+
+Problemas recomendados para entrenar esta intuición específica:
+
+- Best Time to Buy and Sell Stock (Easy) - el caso base, recordar 1 variable.
+- Maximum Subarray (Medium) - Kadane's, 2 variables.
+- House Robber (Medium) - DP de variables fijas, 2 variables (prev, curr).
+- Container With Most Water (Medium) - two pointers, decisión greedy en cada paso.
+- Increasing Triplet (Medium) - el que acabas de hacer.
+- Longest Mountain in Array (Medium) - greedy con estado de "donde subo, donde bajo".
+
+
+How to train this intuition
+- Step 1: question what past information you actually use to decide
+- Step 2: think about the possible states at each step
+- Step 3: think in terms of "what makes future success easier"
+- Step 4: verify with dry-run examples
+    
+After every brute force, before coding ask:
+1. What info from the past do I actually use right now?
+2. Can I summarize it in 1-2 fixed variables?
+3. What update rule keeps the "optimal decision still possible"
+    invariant?
+
