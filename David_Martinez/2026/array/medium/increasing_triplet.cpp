@@ -119,6 +119,8 @@ y lo que apareza y sea mayor que k, ya con eso se cumplieron las condiciones
 
 Pero como es que debo de pensar al hacer este tipo de problemas? como es que se puede llegar a esa logica?
 
+Igual pude hacer mas esfuerzo en los ejemplos para sacar un ejemplo con el que pudiera ver 
+el patron o que algo no iba a funcionar.
 */
 /*
 FEEDBACK NOTES
