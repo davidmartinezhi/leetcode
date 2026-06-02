@@ -65,12 +65,44 @@ public:
             - 3
             - 4 
         */
+                
+        // edge case: n is 1
+        if(n == 1) return "1";
         
         string str = "1";
         
-        countAndSayHelper(str, n-1);
+        for(int i = 1; i < n; i++){
+            
+            string newStr = "";
+            char currNum = str[0];
+            int counter = 0;
+            
+            int j = 0;
+            while(j < str.size()){
+                while(j < str.size() && str[j] == currNum){
+                    counter++;
+                    j++;
+                }
+                newStr += '0' + counter;
+                newStr += currNum;
+                
+                if(j < str.size()){
+                    currNum = str[j];
+                    counter = 0;
+                }
+            }
+            
+            str = newStr;    
+        }
         
         return str;
+        
+        
+        // string str = "1";
+        
+        // countAndSayHelper(str, n-1);
+        
+        // return str;
     }
     
     /*
@@ -106,7 +138,7 @@ public:
             
             // in this state we are at the end or in a new num
             // add the number and counter
-            newStr += '0' + counter;
+            newStr += to_string(counter);
             newStr += currNum;
             
             // if not at the end, we have a new number
@@ -125,12 +157,15 @@ public:
     // 12 min left and just finished the helper function
     
 }; // 45 min. mi error fuer la conversion del counter a char. lo hice mal era '0' + counter en lugar de counter - '0' <- este es para convertir digit to int (we get dist from dig to 0 tipo '3' - '0' = 51 - 48 = 3)
-
 /*
 Si es bueno ver la naturaleza del tipo de problema para ver como seria mas simple escribirlo
 
 si era mucho mas sencillo resolverlo con iteracion, ahi me complique la vida al querer hacerlo recursivo
 
 igual muy buen aprendizaje sobre la distribuicion del tiempo.
+
+
+Igual debo de incluir en las sesiones de estudio checar syntax de c++ para estar mas comodo con el lenguaje, 
+ya que ahora no lo uso tanto como antes y uso mucho python o typescript en el trabajo.
 
 */
