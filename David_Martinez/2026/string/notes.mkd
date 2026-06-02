@@ -62,3 +62,7 @@ s += c;            s.push_back(c);     s.pop_back();
 s.find("ab")       // index or string::npos
 reverse(s.begin(), s.end());   // <algorithm>
 ```
+
+
+'5' - '0' = 5     (char → int)
+'0' + 5 = '5'     (int → char)

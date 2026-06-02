@@ -1,0 +1,10 @@
+# To look up and refresh
+- Object oriented programming
+    - how to declare a class and methods
+    - virtual functions
+
+- pointers
+    - equivalent to Box in Rust
+    - equivalent to pointer shared by multiple owners in rust
+
+- working with bytes

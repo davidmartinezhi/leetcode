@@ -1,0 +1,119 @@
+# C++ unordered_map Cheatsheet
+
+`#include <unordered_map>`
+
+Hash map: average O(1) insert/lookup/erase, O(n) worst case.
+For ordered keys or guaranteed log n, use `map` instead.
+
+## Declare
+```cpp
+unordered_map<string, int> mp;
+unordered_map<char, vector<string>> mp;
+unordered_map<int, int> mp = {{1, 10}, {2, 20}};
+```
+
+## Insert / update
+```cpp
+mp["key"] = 5;                    // insert or overwrite
+mp.insert({"key", 5});            // insert only if key doesn't exist
+mp["counter"]++;                  // auto-creates with default (0) if missing
+mp["list"].push_back(x);          // auto-creates empty vector if missing
+```
+
+## Lookup
+```cpp
+mp["key"]                         // returns value, CREATES entry if missing (default-init)
+mp.at("key")                      // returns value, THROWS if missing (safer for reads)
+mp.count("key")                   // returns 1 if present, 0 if not
+mp.find("key")                    // returns iterator, mp.end() if missing
+mp.contains("key")                // C++20, returns bool
+```
+
+## Check before access
+```cpp
+if (mp.count(key))         { /* present */ }
+if (mp.find(key) != mp.end()) { /* present */ }
+if (mp.contains(key))      { /* present, C++20 */ }
+```
+
+## Get with default if missing
+```cpp
+int val = mp.count(key) ? mp[key] : 0;
+```
+
+## Erase
+```cpp
+mp.erase("key");                  // by key
+mp.erase(mp.find("key"));         // by iterator
+mp.clear();                       // remove all
+```
+
+## Iterate
+```cpp
+for (auto& [k, v] : mp) {         // C++17 structured binding
+    // k, v
+}
+
+for (auto& pair : mp) {           // old style
+    // pair.first, pair.second
+}
+```
+
+## Size / empty
+```cpp
+mp.size()      mp.empty()
+```
+
+## Common patterns
+
+```cpp
+// frequency count
+unordered_map<char, int> freq;
+for (char c : s) freq[c]++;
+
+// grouping (anagrams, etc.)
+unordered_map<string, vector<string>> groups;
+for (auto& s : strs) groups[key(s)].push_back(s);
+
+// last-seen index
+unordered_map<char, int> lastSeen;
+for (int i = 0; i < n; i++) {
+    if (lastSeen.count(s[i])) { /* seen before at lastSeen[s[i]] */ }
+    lastSeen[s[i]] = i;
+}
+
+// two-sum complement lookup
+unordered_map<int, int> seen;
+for (int i = 0; i < n; i++) {
+    int need = target - nums[i];
+    if (seen.count(need)) return {seen[need], i};
+    seen[nums[i]] = i;
+}
+```
+
+## Gotchas
+
+- `mp["missing"]` CREATES the entry with default value. Use `count` or `find` for read-only checks if you don't want side effects.
+- Default values: int=0, double=0.0, string="", vector={}, pointer=nullptr.
+- No ordering. Iteration order is unspecified.
+- Keys must be hashable. Built-in types and `string` work out of the box. Custom types need a custom hash.
+
+## unordered_map vs map
+
+| | unordered_map | map |
+|---|---|---|
+| backing | hash table | red-black tree |
+| ordered keys | no | yes (sorted) |
+| insert / lookup | avg O(1), worst O(n) | O(log n) guaranteed |
+| use when | speed, no order needed | need sorted iteration or guaranteed log n |
+
+## unordered_set (related)
+
+`#include <unordered_set>` — same hash table without values, for membership checks.
+
+```cpp
+unordered_set<int> seen;
+seen.insert(x);
+if (seen.count(x)) { ... }
+seen.erase(x);
+```
