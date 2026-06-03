@@ -1,2 +1,122 @@
 To do later:
 - Add Two Numbers (Medium 2): manipulación de linked lists con carry.
+
+# C++ Linked Lists Cheatsheet
+
+```cpp
+struct ListNode {
+    int val;
+    ListNode* next;
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode* next) : val(x), next(next) {}
+};
+```
+
+## Pointer access
+```cpp
+node->val           // member via pointer (sugar for (*node).val)
+node->next          // next node
+ListNode obj(0);    // OBJECT on stack (is a node)
+ListNode* p = &obj; // POINTER to that object (same memory)
+ListNode* p(0);     // GOTCHA: pointer set to nullptr, NOT a new node
+ListNode* p = new ListNode(0);  // pointer to new heap node
+```
+
+## Build-as-you-go pattern (always two lines together)
+```cpp
+trav->next = node;   // connect
+trav = trav->next;   // ADVANCE (forgetting this overwrites on next step)
+```
+
+## Dummy node (unifies "head" with "middle" cases)
+```cpp
+ListNode dummy(0, head);   // stack dummy before head, auto-destroyed
+ListNode* trav = &dummy;
+// ... build/modify ...
+return dummy.next;         // correct head whether or not head changed
+```
+Use for: insert/delete that might hit the head, merging, building new lists.
+
+## Reverse list (prev / curr / next)
+```cpp
+ListNode* prev = nullptr;
+ListNode* curr = head;
+while (curr != nullptr) {
+    ListNode* nxt = curr->next;   // capture BEFORE breaking link
+    curr->next = prev;            // flip pointer
+    prev = curr;                  // advance prev
+    curr = nxt;                   // advance curr
+}
+return prev;
+// Time O(n), Space O(1)
+```
+
+## Merge two sorted lists
+```cpp
+ListNode dummy(0);
+ListNode* trav = &dummy;
+while (l1 && l2) {
+    if (l1->val < l2->val) { trav->next = l1; l1 = l1->next; }
+    else                   { trav->next = l2; l2 = l2->next; }
+    trav = trav->next;
+}
+trav->next = (l1 != nullptr) ? l1 : l2;  // remaining nodes already linked
+return dummy.next;
+// Time O(n+m), Space O(1)
+```
+
+## Delete node given only that node (not the last)
+```cpp
+ListNode* toDelete = node->next;
+node->val = toDelete->val;     // copy next's data into current
+node->next = toDelete->next;   // bypass next
+delete toDelete;               // free it
+```
+
+## Two pointers: fast / slow
+
+### Remove Nth from end (one pass)
+```cpp
+ListNode dummy(0, head);
+ListNode* slow = &dummy;
+ListNode* fast = &dummy;
+for (int i = 0; i <= n; i++) fast = fast->next;  // gap of n+1
+while (fast != nullptr) { slow = slow->next; fast = fast->next; }
+ListNode* toDelete = slow->next;
+slow->next = toDelete->next;
+delete toDelete;
+return dummy.next;
+// slow ends at node BEFORE the one to remove
+```
+
+### Middle of list / cycle detection
+```cpp
+// middle: slow lands at middle when fast hits end
+ListNode* slow = head;
+ListNode* fast = head;
+while (fast && fast->next) {
+    slow = slow->next;        // 1x
+    fast = fast->next->next;  // 2x
+}
+// slow is at middle (cycle: if slow == fast at any point, there's a loop)
+```
+
+## Common bugs (today's lessons)
+- `ListNode* p(0)` makes a NULL pointer, not a node. Use `new ListNode(0)` or stack object.
+- Forgetting `trav = trav->next` when building: each assign overwrites the last, nodes get lost.
+- In reverse, capture `next` BEFORE flipping the pointer or you lose the rest of the list.
+- Off-by-one when stopping to delete: you must land on the node BEFORE the target (singly linked has no prev). Dummy node + correct gap fixes this.
+
+## When dummy node helps
+Any operation that could affect the head: delete head, insert before head,
+build a fresh list. The dummy gives you a stable "node before head" so the
+head case needs no special handling.
+
+It's basically to treat the head as part of the body and avoid writing that special case
+
+## Stack vs heap for dummy
+```cpp
+ListNode dummy(0);        // stack: auto-cleanup, preferred for temp dummy
+ListNode* d = new ...;    // heap: needs delete, only if it must outlive scope
+```
