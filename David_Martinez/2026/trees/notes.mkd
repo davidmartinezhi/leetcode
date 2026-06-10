@@ -1,0 +1,154 @@
+I remember this type of problems are all about traversals
+
+
+Same Tree / Symmetric Tree: recursión comparando dos árboles a la vez.
+Invert Binary Tree: recursión que modifica estructura.
+Path Sum: recursión acumulando un valor por el camino.
+Lowest Common Ancestor: recursión que "sube" información.
+Binary Tree Level Order Traversal: BFS con queue (cambia de recursión a iteración con cola).
+
+# Binary Tree Cheatsheet
+
+## Bounds approach (validate BST example)
+Each node must fit inside a shrinking (min, max) range. Going left lowers the
+ceiling to the current value; going right raises the floor.
+
+```cpp
+bool validate(TreeNode* root, long minVal, long maxVal) {
+    if (!root) return true;
+    if (root->val <= minVal || root->val >= maxVal) return false;
+    return validate(root->left,  minVal, root->val) &&   // left: max = current
+           validate(root->right, root->val, maxVal);     // right: min = current
+}
+// call: validate(root, LONG_MIN, LONG_MAX);
+```
+- Use when each node must respect limits from ALL ancestors, not just its parent.
+- `long` (or nullptr pointers) avoids the INT_MIN/INT_MAX edge case.
+
+---
+
+## Compare two nodes at once (symmetric / same tree)
+When the problem compares TWO structures, recurse with TWO node params.
+
+```cpp
+bool compare(TreeNode* a, TreeNode* b) {
+    if (!a && !b) return true;     // both null  → match
+    if (!a || !b) return false;    // one null   → mismatch
+    return a->val == b->val
+        && compare(/* ... */)
+        && compare(/* ... */);
+}
+```
+- Same Tree: parallel calls → `compare(a->left, b->left)` and `compare(a->right, b->right)`
+- Symmetric Tree: crossed calls → `compare(a->left, b->right)` and `compare(a->right, b->left)`
+- The null handling (first two ifs) replaces sentinels; no leaks, no value-range tricks.
+- Use for: Same Tree, Symmetric Tree, Merge Two Trees, Leaf-Similar Trees.
+
+---
+
+## Traversals
+
+### Preorder (root → left → right)
+```cpp
+void pre(TreeNode* root) {
+    if (!root) return;
+    visit(root);        // process BEFORE children
+    pre(root->left);
+    pre(root->right);
+}
+```
+- Process a node before its subtrees: cloning a tree, serializing,
+  building a tree from the root down.
+
+### Inorder (left → root → right)
+```cpp
+void in(TreeNode* root) {
+    if (!root) return;
+    in(root->left);
+    visit(root);        // process BETWEEN children
+    in(root->right);
+}
+```
+- BSTs: inorder gives nodes in sorted order.
+- Validate BST, kth smallest, sorted output.
+
+### Postorder (left → right → root)
+```cpp
+void post(TreeNode* root) {
+    if (!root) return;
+    post(root->left);
+    post(root->right);
+    visit(root);        // process AFTER children
+}
+```
+- A node needs its children's results first: height, deleting a tree,
+  subtree sums, anything bottom-up.
+
+### Level order (BFS, level by level)
+```cpp
+void levelOrder(TreeNode* root) {
+    if (!root) return;
+    queue<TreeNode*> q;
+    q.push(root);
+    while (!q.empty()) {
+        int sz = q.size();              // nodes in this level
+        for (int i = 0; i < sz; i++) {
+            TreeNode* node = q.front(); q.pop();
+            visit(node);
+            if (node->left)  q.push(node->left);
+            if (node->right) q.push(node->right);
+        }
+        // end of one level here
+    }
+}
+```
+- Iterative, uses a queue (not recursion).
+- Level-by-level needs: shortest path, level averages, right-side view, zigzag.
+
+---
+
+## Top-down vs Bottom-up (recursion styles)
+
+### Bottom-up: info goes UP via return value
+Children compute their answers and return them; the parent combines them.
+```cpp
+int height(TreeNode* root) {
+    if (!root) return 0;
+    int left  = height(root->left);     // ask children for their result
+    int right = height(root->right);
+    return max(left, right) + 1;        // combine and return upward
+}
+```
+- Use when a node's answer depends on its SUBTREES (height, sum, diameter).
+- This is just postorder with a return value.
+
+### Top-down: info goes DOWN via parameters
+The parent computes context and passes it to children as arguments.
+```cpp
+int maxD = 0;
+
+void depth(TreeNode* root, int d) {
+    if (!root) return;
+    d = d + 1;                  // this node sits at depth d
+    maxD = max(maxD, d);        // record the running max
+    depth(root->left,  d);      // hand the depth DOWN to the children
+    depth(root->right, d);
+}
+// call: maxD = 0; depth(root, 0);  → answer in maxD
+```
+- Use when a node's answer depends on its ANCESTORS (current depth, path so
+  far, the min/max bounds). The bounds approach above is top-down: the limits
+  flow down through the parameters.
+
+---
+
+## Pick the approach by what the problem asks
+- Produce levels (level order, right-side view, zigzag) → BFS with queue
+- Compare two structures / mirror (symmetric, same tree) → recurse on two nodes
+- Property from SUBTREES (height, sum, diameter) → bottom-up recursion
+- Property from ANCESTORS (path sum, bounds) → top-down recursion
+
+## The 3 questions for any tree recursion
+1. Base case: what to return when root is null? (0, true, nullptr...)
+2. Combine children: how to merge left and right? (`&&`, `||`, `+`, `max`...)
+3. Current node: how to fold it in? (`+1`, compare value, include in result)
