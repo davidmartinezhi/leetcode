@@ -1,0 +1,51 @@
+# C++ Study List for Hedge Fund Interviews
+
+Ordered by priority. Start at the top.
+
+## Tier 1 — Must know (asked constantly)
+- [ ] RAII (resource acquisition is initialization)
+- [ ] Smart pointers: unique_ptr, shared_ptr, weak_ptr (when to use each)
+- [ ] Move semantics: rvalue refs, std::move, std::forward
+- [ ] Rule of 0/3/5
+- [ ] const correctness: const, constexpr, const methods
+- [ ] References vs pointers vs values (when to pass each)
+- [ ] Stack vs heap allocation
+- [ ] STL containers + their complexity (vector, unordered_map, map, set, deque)
+
+## Tier 2 — Strongly expected
+- [ ] Iterators and categories (input, forward, bidirectional, random access)
+- [ ] STL algorithms (sort, find, lower_bound, accumulate, transform)
+- [ ] Which container to pick + trade-offs (speed vs memory)
+- [ ] emplace vs insert, reserve, capacity
+- [ ] Memory bugs: leaks, dangling pointers, double free
+- [ ] new/delete vs malloc/free
+- [ ] Lambdas (capture by value vs reference)
+- [ ] auto, range-based for, structured bindings
+
+## Tier 3 — HFT-specific (Citadel, Jane Street dig here)
+- [ ] Cache locality, cache lines, false sharing
+- [ ] Branch prediction
+- [ ] Copy elision / RVO (return value optimization)
+- [ ] Inlining, what -O2/-O3 do
+- [ ] Memory layout: alignment, padding
+- [ ] Concurrency: threads, mutex, lock_guard, condition variables
+- [ ] Atomics and memory ordering
+- [ ] Race conditions, deadlocks
+
+## Tier 4 — Advanced / nice to have
+- [ ] Templates: function, class, specialization
+- [ ] Variadic templates
+- [ ] Type traits, SFINAE
+- [ ] std::optional, std::variant
+- [ ] Lock-free programming
+- [ ] Placement new
+- [ ] Concepts (C++20)
+
+---
+
+## If you only do 6 things
+RAII → smart pointers → move semantics → rule of 5 → const → references vs pointers.
+These are guaranteed to come up.
+
+## Main resource
+"Effective Modern C++" by Scott Meyers — covers most of Tier 1 and 2.
