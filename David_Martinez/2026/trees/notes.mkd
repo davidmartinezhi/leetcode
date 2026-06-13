@@ -202,6 +202,49 @@ void depth(TreeNode* root, int d) {
   far, the min/max bounds). The bounds approach above is top-down: the limits
   flow down through the parameters.
 
+## Two-node recursion (relate nodes across separate branches)
+Carry TWO node pointers when you must relate nodes that are NOT parent-child,
+but sit in different branches that "touch" conceptually (mirror positions,
+sibling cousins, same slot in two trees). A single pointer can't reach a node
+in a sibling branch — that's why you carry two.
+
+```cpp
+bool compare(TreeNode* a, TreeNode* b) {
+    if (!a && !b) return true;     // both null  → match
+    if (!a || !b) return false;    // one null   → mismatch
+    return a->val == b->val
+        && compare(/* ... */)
+        && compare(/* ... */);
+}
+```
+
+The null base case (first two ifs) replaces sentinels — no leaks, no value-range
+tricks. What varies is which pairs you recurse on:
+
+- **Parallel** (same position in two trees): Same Tree, Merge Two Trees
+  `compare(a->left, b->left)`, `compare(a->right, b->right)`
+- **Crossed** (mirror): Symmetric Tree
+  `compare(a->left, b->right)`, `compare(a->right, b->left)`
+- **With a bridge** (connect within each branch + the gap between them):
+  Populate Next Right Pointers — needs THREE calls
+```cpp
+  void connectTwo(Node* L, Node* R) {
+      if (!L || !R) return;
+      L->next = R;                          // join this pair
+      connectTwo(L->left,  L->right);       // inside left
+      connectTwo(L->right, R->left);        // the bridge (crossed)
+      connectTwo(R->left,  R->right);       // inside right
+  }
+  // call: if (root) connectTwo(root->left, root->right);
+```
+
+Two uses overall:
+- **Compare** (are they equal / mirrored?) → return bool. Same/Symmetric/Leaf-Similar.
+- **Operate** (do something between them) → modify or build. Connect, Merge Two Trees.
+
+Signal to reach for it: you catch yourself thinking "I need the node over THERE
+while I'm at this node HERE", and "there" is in another branch.
+
 ---
 
 ## Pick the approach by what the problem asks
