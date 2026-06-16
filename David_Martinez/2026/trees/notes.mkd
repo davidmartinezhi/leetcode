@@ -69,6 +69,17 @@ Binary Tree Paths (257) - Easy
 9. Binary Tree Maximum Path Sum (124) - Hard
    Bottom-up con truco, aparece en interviews quant
 
+
+Max Area of Island (695)       → mismo DFS, retorna tamaño en vez de contar
+Flood Fill (733)               → mismo DFS, cambia color
+Surrounded Regions (130)       → DFS desde los bordes
+Number of Closed Islands (1254)→ DFS, islas que no tocan el borde
+Pacific Atlantic Water Flow    → DFS multi-fuente
+Rotting Oranges (994)          → la versión BFS de esto
+Max Area of Island (695): casi idéntico, pero el DFS retorna el tamaño del componente en vez de solo marcar. Te enseña a hacer que el DFS devuelva información, no solo modifique.
+Rotting Oranges (994): la versión BFS del mismo tipo de problema. Te introduce BFS multi-fuente en grid, que es un patrón distinto (cola con múltiples puntos de inicio). Importante porque BFS en grid aparece para "distancia mínima" o "propagación por niveles".
+Course Schedule (207): grafo como lista de adyacencia (no grid), detección de ciclos con DFS o topological sort. Es el otro gran tipo de graph problem (grafos generales, no grids).
+
 # Binary Tree Cheatsheet
 
 ## Bounds approach (validate BST example)
