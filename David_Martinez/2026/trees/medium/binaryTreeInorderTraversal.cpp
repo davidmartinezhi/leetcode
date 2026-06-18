@@ -24,6 +24,17 @@ struct TreeNode {
     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
 };
  
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
 class Solution {
 public:
     vector<int> inorderTraversal(TreeNode* root) {
@@ -58,7 +69,41 @@ public:
         // Vector to store all values
         vector<int> inorderTraversal;
         
+        /*
+        recursive traversal
         fillInorderTraversal(inorderTraversal, root);
+        */
+        /*
+        result = [ 1, 2, 3, 4, 5
+        stack = [  
+        root= n
+                        3
+                    1       4
+                        2       5
+        */
+        
+        // iterative traversal
+        stack<TreeNode*> stack;
+        
+        while(!stack.empty() || root){
+            
+            // while root is not a nullptr
+            while(root){
+                //add the corrent node, which we will travers in a future, to the stack
+                stack.push(root);
+                
+                // move to the left
+                root = root->left;
+            }
+            
+            // if we are out, it means we are at the limit
+            // get the node out
+            root = stack.top(); stack.pop();
+            inorderTraversal.push_back(root->val);
+            
+            // set root to be the right child
+            root = root->right;
+        }
         
         return inorderTraversal;
     }
