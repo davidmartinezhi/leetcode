@@ -3,3 +3,154 @@
 
 https://www.youtube.com/watch?v=Nabbpl7y4Lo 
 gran video
+
+# Backtracking — Concepts & Mental Model
+
+## The core idea
+Explore every path in a decision tree. Go deep until you hit the goal (or a
+dead end), record/return, then step back and try the next option. It's DFS
+where you **undo** your last choice on the way back.
+
+```
+go deep → reach goal → record → step back → try next path → repeat
+```
+
+---
+
+## The 3 questions to ask BEFORE coding
+Answer these first and the code writes itself.
+
+1. **What's the goal / base case?**
+   When do I stop and record a solution?
+   (e.g. `path.size() == nums.size()`, or `idx == word.size()`)
+
+2. **What are my options at each step?**
+   What choices can I make from here?
+   (e.g. add `(` or `)`, pick a letter, move in 4 directions)
+
+3. **What makes an option valid?**
+   The condition that lets me take it. This becomes an `if`.
+   (e.g. open `(` only if `open > 0`; close `)` only if `close > open`)
+
+> Each valid option = one `if (condition) { take it; recurse; undo; }`.
+> Don't start with a loop over generic options — start with the rules.
+
+---
+
+## The template
+```cpp
+void backtrack(state) {
+    if (goal reached) { record(state); return; }
+
+    for (each option) {
+        if (option is valid) {
+            make the choice;       // pick
+            backtrack(next state); // explore
+            undo the choice;       // un-pick
+        }
+    }
+}
+```
+
+---
+
+## Two flavors of "choice"
+
+### Include / exclude (one element at a time)
+For each element, two branches: take it or skip it.
+```cpp
+// Subsets
+subset.push_back(nums[i]);
+backtrack(i + 1);          // with the element
+subset.pop_back();
+backtrack(i + 1);          // without it
+```
+
+### Pick the next from what's left (order matters)
+Track what you've already used.
+```cpp
+// Permutations
+for (int i = 0; i < nums.size(); i++) {
+    if (used[i]) continue;     // skip used ones
+    used[i] = true;            // mark
+    perm.push_back(nums[i]);
+    backtrack();
+    perm.pop_back();           // undo
+    used[i] = false;           // unmark
+}
+```
+
+---
+
+## The undo: by-value vs shared state
+- **State passed by value** (`curr + letter`, `subset` copy) → undo is automatic.
+  Your local copy is untouched when the call returns. No `pop_back` needed.
+- **Shared state passed by reference** (`vector<int>& path`) → undo manually with
+  `pop_back` / unmark. More efficient (no copying), but you must clean up.
+
+---
+
+## Marking visited (grids)
+When exploring a grid, mark a cell so you don't reuse it in the SAME path —
+then unmark it on the way back so OTHER paths can use it.
+
+```cpp
+char tmp = board[r][c];
+board[r][c] = '#';         // mark used in this path
+... recurse in 4 directions ...
+board[r][c] = tmp;         // restore for other paths
+```
+
+### Key distinction: backtracking vs flood fill
+```
+Flood fill (Number of Islands):  mark and NEVER unmark.
+                                  Visit each cell once, permanently.
+
+Backtracking (Word Search):      mark, recurse, then UNMARK.
+                                  A cell is off-limits only during this path.
+```
+Ask: "Should this cell be blocked forever, or only for the current path?"
+
+---
+
+## Pruning
+Cut branches that can't lead to a valid solution, as early as possible.
+Doesn't change worst-case Big-O, but slashes real runtime.
+```
+Generate Parentheses:  never add ')' if it would be invalid
+N-Queens:              skip cells attacked by a placed queen
+Combination Sum:       stop if the running sum exceeds the target
+```
+
+---
+
+## Complexity (how to count)
+```
+(branches per step) ^ (depth)   ×   (cost to build each solution)
+```
+- **branches per step** = the base of the exponent
+- **depth** = the exponent (NOT always n — e.g. Word Search depth = word length)
+- **× cost** = copying each result usually costs its length
+
+```
+Subsets:           2 branches (in/out), depth n      → O(2^n · n)
+Permutations:      reorder n elements                → O(n! · n)
+Letter Combos:     up to 4 letters, n digits         → O(4^n · n)
+Word Search:       4 directions, depth = word len L  → O(n·m · 4^L)
+```
+Watch out: "how many starting points" (n·m) is NOT the same as "depth of each
+search" (L). Word Search starts from n·m cells, each search goes 4^L deep.
+
+---
+
+## How to recognize a backtracking problem
+If it asks for **all** solutions / **all** ways / **every** valid arrangement,
+it's almost always backtracking. The output size is usually exponential or
+factorial — that's the tell.
+
+importante preguntarse esto tambien: Específicamente, no te preguntaste "¿puede un camino querer revisitar una celda, y eso es válido o no?".
+
+
+"¿La celda visitada debe quedar bloqueada para siempre, o solo durante este camino?"
+Bloqueada para siempre (no revisitar nunca)  → marca permanente, flood fill (numIslands)
+Bloqueada solo en este camino (otros sí)     → marca + desmarca, backtracking (Word Search)
