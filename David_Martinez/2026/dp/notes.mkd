@@ -1,0 +1,7 @@
+House Robber (198): 1D DP, pero con una decisión (robar o no) en cada paso.
+
+Coin Change (322): 1D DP, minimizar en vez de contar.
+
+Longest Increasing Subsequence (300): 1D DP con búsqueda hacia atrás.
+
+Unique Paths (62): 2D DP en grid.

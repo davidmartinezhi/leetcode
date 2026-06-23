@@ -1,0 +1,7 @@
+problems with the static pointer and exploratory pointer pattern, for practice
+
+Sort Colors:       junta 0s, luego 1s (dos pasadas del mismo patrón)
+Move Zeroes:       junta los no-cero al frente, los ceros caen al final
+Remove Element:    junta los que NO son el target al frente
+Remove Duplicates: junta los únicos al frente
+Partition (quicksort): junta los menores que el pivote al frente
