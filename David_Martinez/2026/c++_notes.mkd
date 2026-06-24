@@ -20,6 +20,12 @@ if(it != nums_set.end()){
 }
 ```
 
+Iterating a map (pairs):
+```cpp
+for (auto& [key, val] : myMap) { ... }   // structured bindings, no copy
+for (auto& kv : myMap) { kv.first; kv.second; }   // older style
+```
+
 ## Vectors
 
 This is how we create vectors of a certain length with a certain value in every index
@@ -74,3 +80,47 @@ Es el mismo pensamiento que al hacer una recursion, es importante saber en cada 
 estado es que puedo estar. Y segun el estado es el comportamiento que queremos.
 
 
+## priority_queue (heaps)
+
+A `priority_queue` is a heap. By default it's a MAX-heap (largest on top).
+
+```cpp
+#include <queue>
+
+priority_queue<int> maxHeap;                                  // max-heap (default)
+priority_queue<int, vector<int>, greater<int>> minHeap;       // min-heap
+
+maxHeap.push(5);     // insert            O(log n)
+maxHeap.top();       // peek largest      O(1)   — does NOT remove
+maxHeap.pop();       // remove largest    O(log n) — returns nothing
+maxHeap.size();
+maxHeap.empty();
+```
+
+Gotcha: `pop()` removes but does NOT return the element. Read it with `top()` first.
+```cpp
+int x = maxHeap.top();   // read
+maxHeap.pop();           // then remove
+```
+
+Mnemonic for the min-heap signature: `greater<int>` = "greater comes later" =
+smallest on top. The long form `priority_queue<int, vector<int>, greater<int>>`
+is the one that's easy to forget — memorize it.
+
+### Heap of pairs
+A `priority_queue<pair<int,int>>` orders by `.first` first, then `.second` on ties.
+Put the value you want to sort by in `.first`.
+
+```cpp
+priority_queue<pair<int,int>> maxHeap;          // sorts by .first (descending)
+maxHeap.push({count, value});                   // e.g. {frequency, number}
+
+auto top = maxHeap.top();
+int c = top.first;       // the count
+int v = top.second;      // the value
+
+// min-heap of pairs:
+priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> minHeap;
+```
+
+Common pattern — `{priority, id}` so the heap orders by priority:

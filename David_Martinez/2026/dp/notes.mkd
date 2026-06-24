@@ -5,3 +5,9 @@ Coin Change (322): 1D DP, minimizar en vez de contar.
 Longest Increasing Subsequence (300): 1D DP con búsqueda hacia atrás.
 
 Unique Paths (62): 2D DP en grid.
+
+
+Best Time to Buy/Sell:  para cada venta, el mínimo de compra previo
+Maximum Subarray:       para cada fin, la mejor suma que termina aquí (Kadane)
+Container With Water:    para cada par, maximizar área
+Trapping Rain Water:     para cada posición, el máximo a izquierda y derecha

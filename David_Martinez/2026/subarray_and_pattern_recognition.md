@@ -156,6 +156,60 @@ for (int i = 0; i < n; i++) {
 - Does any subset sum to exactly K?
 
 ---
+---
+
+## 4. Best-So-Far (Fix One End, Track the Best Other End)
+
+**When to use:** You need the best pair (max difference, max profit, best
+match) where one element must come BEFORE the other in the array.
+
+**Key indicators:**
+- There's an order constraint: buy before sell, earlier before later
+- You're tempted to find two extremes separately (a min and a max) and then
+  force the max to come after the min
+- One pass should be enough
+
+**Core intuition:** Don't hunt for two extremes and then patch up the ordering.
+Instead, fix each element as the SECOND of the pair (the sell day), and track
+the best possible FIRST element seen so far (the lowest buy price). The order
+constraint then holds automatically — the "best so far" only ever looks at
+earlier elements.
+
+**Template (Best Time to Buy and Sell Stock):**
+```cpp
+int minPrice = prices[0];   // best buy price seen so far
+int maxProfit = 0;
+
+for (int price : prices) {
+    minPrice  = min(minPrice, price);            // update best first-element
+    maxProfit = max(maxProfit, price - minPrice);// best if we sell today
+}
+return maxProfit;
+```
+
+**Why it works:** For each "sell day", the best profit is today's price minus
+the lowest price in the days before it. By scanning left to right and updating
+the running minimum BEFORE computing the profit, every profit uses only an
+earlier (or equal) buy. The "buy before sell" rule is satisfied by construction,
+with no resets or extra state.
+
+**The trap this avoids:** Tracking a separate `max` and resetting it whenever a
+new `min` appears (to force max-after-min) works but is fragile. Reformulating
+as "fix the sell, track the best buy so far" removes the ordering hassle.
+
+**Examples:**
+- Best Time to Buy and Sell Stock (classic)
+- Maximum difference where larger element comes after smaller
+- Any "for each endpoint, what's the best start seen so far" problem
+
+**Does NOT apply when:**
+- There's no order constraint between the two elements
+- You can do multiple transactions (that's a different greedy/DP)
+
+**General principle:** When you catch yourself adding logic to *force* an
+ordering constraint (like resetting a max when a new min shows up), stop and
+ask: is there a formulation where the constraint holds for free? Usually it's
+"fix one end, track the best other end as you scan."
 
 ## Quick Decision Guide
 
@@ -195,3 +249,17 @@ Is the operation addition or multiplication?
     - ->->
         - static y dinamic
         - uno recorre y el otro recorre hasta el status actual
+
+"explorador que recorre + referencia que se actualiza condicionalmente"
+
+Familia "una pasada, actualiza algo condicionalmente":
+  
+  variante A — frontera de posición:
+     trackeas DÓNDE va el próximo elegido (idx)
+     modificas el array (swap)
+     move zeroes, sort colors, partition
+  
+  variante B — mejor valor visto:
+     trackeas QUÉ es el mejor hasta ahora (min/max acumulado)
+     no modificas el array, solo lees
+     best time to buy, Kadane, running max
