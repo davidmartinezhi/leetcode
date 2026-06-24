@@ -114,6 +114,16 @@ public:
         
         return maxProfit;
         */
+       /*
+
+       // This one is even more efficient
+        int i = 0;
+        for(int j = ...){
+            max_profit = max(max_profit, prices[j] - prices[i]);
+            if(prices[j] < prices[i]) i = j;
+        }
+       
+       */
         
         // simplififed solution
         
