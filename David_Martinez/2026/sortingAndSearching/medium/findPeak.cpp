@@ -134,7 +134,7 @@ eventually we´ll find a peak or we'll get to the border where everything after 
 Very interesting problem, i never thought of binary earch this way.
 
 if we can ignore half of the rest of the values all the time with a good certainty. that means that
-binary search is the way to go.
+binary search is the way to go. Its also useful that we have no flat land
 
 runtime: log n
 memory: o(1)
