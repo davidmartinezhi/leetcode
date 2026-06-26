@@ -1,0 +1,206 @@
+problems with the static pointer and exploratory pointer pattern, for practice
+
+Sort Colors:       junta 0s, luego 1s (dos pasadas del mismo patrón)
+Move Zeroes:       junta los no-cero al frente, los ceros caen al final
+Remove Element:    junta los que NO son el target al frente
+Remove Duplicates: junta los únicos al frente
+Partition (quicksort): junta los menores que el pivote al frente
+
+# Search & Sorting — Notes
+
+## Binary Search — the real principle
+
+Binary search is NOT "search a sorted array." It's:
+
+> **At each step, can I discard half the array with certainty?**
+
+If yes → binary search applies, even if the array isn't fully sorted.
+Sorted order is just ONE way to get that certainty. Rotation, slopes, and
+monotone properties are others.
+
+### How to recognize it
+1. Problem asks for **O(log n)** or "better than O(n)" → strong signal.
+2. You need **ONE point** with a property, not all of them.
+3. You can decide which half to keep by looking at **mid** (and maybe a neighbor
+   or an endpoint).
+4. The array has **some structure** (sorted, rotated, slope, monotone).
+
+If 1 and 3 hold, it's almost certainly binary search.
+
+### Two flavors
+```
+Classic (sorted array):   search a VALUE → compare mid with the target
+Pivot / Peak (not fully sorted): search a POINT → compare mid with a NEIGHBOR
+                                  or an ENDPOINT to read the local shape
+```
+
+### Overflow-safe mid
+```cpp
+int mid = left + (right - left) / 2;   // not (left + right) / 2
+```
+`left + right` can overflow when values are near INT_MAX. Always use this form.
+
+---
+
+## Find Peak Element (slope intuition)
+
+Picture the array as a mountain/wave. From the middle, look at the slope:
+```
+nums[mid] > nums[mid+1]  → going DOWN → a peak is at mid or to the LEFT  → right = mid
+nums[mid] < nums[mid+1]  → going UP   → the climb continues RIGHT        → left  = mid + 1
+```
+**Why it always works:** keep climbing uphill. Either you keep rising until the
+end (the border is -∞, so the last element is a peak), or you start falling (the
+point just before the fall is a peak). A peak is always guaranteed in the uphill
+direction — the other values don't matter.
+
+The asymmetry (`mid+1` going up, `mid` going down):
+- Going up, `mid` can't be the peak (its right neighbor is bigger) → discard it.
+- Going down, `mid` might be the peak (right neighbor is smaller) → keep it.
+
+```cpp
+int left = 0, right = nums.size() - 1;
+while (left < right) {
+    int mid = left + (right - left) / 2;
+    if (nums[mid] > nums[mid + 1]) right = mid;     // going down
+    else left = mid + 1;                            // going up
+}
+return left;
+```
+O(log n) always — no bad worst case (each step halves the range).
+
+---
+
+## Find Pivot / Rotated Array (same family)
+
+Same idea as peak: binary search on a not-fully-sorted array, deciding the side
+by comparing mid with a reference point.
+```
+Find Min in Rotated:  compare nums[mid] with nums[right] → which half is sorted
+Search in Rotated:    find which half is sorted, then check if target is in it
+```
+The shared question: "which half can I discard with certainty?"
+
+### Family to drill
+```
+Find Peak Element (162)                slope
+Find Minimum in Rotated Sorted (153)   rotation
+Search in Rotated Sorted Array (33)    rotation + value search
+First Bad Version (278)                monotone (all-bad after a point)
+Search a 2D Matrix (74)                2D order
+```
+
+---
+
+## First Bad Version (monotone binary search)
+
+Everything after the first bad version is also bad → monotone → binary search.
+- Inclusive range `[lo, hi]` with `lo <= hi` and `end = n-1`-style bounds.
+- mid bad  → answer is mid or earlier → `right = mid`
+- mid good → answer is after mid      → `left = mid + 1`
+```cpp
+while (start < end) {
+    int mid = start + (end - start) / 2;
+    if (isBadVersion(mid)) end = mid;
+    else start = mid + 1;
+}
+return start;
+```
+Iterative is preferred here: O(1) space vs O(log n) for the recursive version.
+
+---
+
+## Sorting small/fixed groups
+
+### Counting sort (k known small groups)
+Count each value, then rewrite the array in order. Works for ANY number of
+groups, as long as values are small integers usable as indices.
+```cpp
+vector<int> freq(k, 0);
+for (int x : nums) freq[x]++;
+int idx = 0;
+for (int v = 0; v < k; v++)
+    while (freq[v]-- > 0) nums[idx++] = v;
+```
+O(n) time, O(k) space. Two passes (count + rebuild).
+
+### Dutch National Flag (exactly 3 groups, one pass)
+Three pointers partition into low / mid / high regions in a single pass.
+```cpp
+int low = 0, mid = 0, high = nums.size() - 1;
+while (mid <= high) {
+    if (nums[mid] == 0) { swap(nums[low], nums[mid]); low++; mid++; }
+    else if (nums[mid] == 1) { mid++; }
+    else { swap(nums[mid], nums[high]); high--; }   // mid does NOT advance
+}
+```
+The one tricky detail: on a swap with `high`, **mid does not advance** — the
+value you just pulled from `high` hasn't been examined yet. On a swap with
+`low`, mid DOES advance (the value from low is already known to be a 1).
+
+```
+3 groups, in-place, one pass, O(1) space  → Dutch flag
+k groups, values in small range           → counting sort
+```
+
+---
+
+## Frontier pointer (partition / move elements)
+
+A slow pointer marks where the next "chosen" element goes; a fast pointer scans.
+Swap and advance the frontier only when the condition holds.
+```cpp
+int idx = 0;                       // frontier: next slot for a chosen element
+for (int i = 0; i < n; i++) {
+    if (nums[i] is chosen) {
+        swap(nums[idx], nums[i]);
+        idx++;                     // frontier advances only on placement
+    }
+}
+```
+**Hook:** it's the slow/fast pattern from linked lists, but in an array with swaps.
+**Family:** Move Zeroes, Remove Element, Remove Duplicates, Sort Colors, quicksort partition.
+**Signal:** "in-place" + "move/separate/group elements by a condition".
+
+---
+
+## Selection without full sort
+
+### Kth Largest — three approaches
+```
+Max-heap with all elements:  O(n log n) time, O(n) space   — push all, pop k-1
+Min-heap of size K:          O(n log k) time, O(k) space    — keep only K largest
+Quickselect:                 O(n) average, O(1) extra       — O(n²) worst case
+```
+
+**Min-heap of size K** (the clean "top-K" pattern):
+```cpp
+priority_queue<int, vector<int>, greater<int>> minHeap;
+for (int num : nums) {
+    minHeap.push(num);
+    if (minHeap.size() > k) minHeap.pop();   // drop the smallest
+}
+return minHeap.top();   // smallest of the K largest = Kth largest
+```
+Each op is O(log k) because the heap never exceeds K — that's the whole point.
+
+**Quickselect** — O(n) average:
+Pick a pivot, partition, recurse into ONLY the side that holds the answer.
+```
+average: n + n/2 + n/4 + ... = O(n)   (recurse one side, halving)
+worst:   n + (n-1) + ... + 1 = O(n²)  (bad pivots, e.g. sorted input)
+```
+Mitigate the worst case with a random pivot. Mention "O(n) average, O(n²) worst"
+in interviews.
+
+---
+
+## Quick complexity reference
+```
+Binary search (any flavor):  O(log n) time, O(1) space iterative
+Counting sort:               O(n + k) time, O(k) space
+Dutch flag:                  O(n) time, O(1) space
+Min-heap top-K:              O(n log k) time, O(k) space
+Quickselect:                 O(n) average / O(n²) worst, O(1) extra
+Comparison sort (std::sort): O(n log n) time
+```
