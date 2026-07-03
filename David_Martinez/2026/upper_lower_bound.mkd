@@ -1,0 +1,106 @@
+# lower_bound & upper_bound Cheatsheet
+
+Binary search, prepackaged. Both need a SORTED range and run in O(log n).
+
+## The core difference
+```cpp
+lower_bound(x)   // first element >= x   (includes x if present)
+upper_bound(x)   // first element >  x   (skips x)
+```
+
+## Basic usage
+```cpp
+#include <algorithm>
+vector<int> v = {2, 5, 5, 8, 12};
+
+lower_bound(v.begin(), v.end(), 5);   // -> points to first 5 (index 1)
+upper_bound(v.begin(), v.end(), 5);   // -> points past last 5 (index 3)
+lower_bound(v.begin(), v.end(), 6);   // -> points to 8 (first >= 6)
+lower_bound(v.begin(), v.end(), 20);  // -> v.end() (nothing >= 20)
+```
+
+The return value is an ITERATOR. Dereference with `*it` to read/write the value.
+Get the numeric index by subtracting begin: `it - v.begin()`.
+
+## Counting patterns (subtract iterators)
+```cpp
+// how many are strictly LESS than x
+int less = lower_bound(v.begin(), v.end(), x) - v.begin();
+
+// how many are strictly GREATER than x
+int greater = v.end() - upper_bound(v.begin(), v.end(), x);
+
+// how many EQUAL x  (the [lower, upper) range)
+int equal = upper_bound(v.begin(), v.end(), x)
+          - lower_bound(v.begin(), v.end(), x);
+```
+
+## Extracting a sub-range (not filtering, slicing by cut point)
+```cpp
+auto it = lower_bound(v.begin(), v.end(), x);
+vector<int> lessThanX(v.begin(), it);   // all elements < x
+```
+This is not a general filter. It exploits the sorted order to find the cut point
+in O(log n). For conditions that do not depend on order, use a normal O(n) scan.
+
+## Exists / find first-or-last occurrence
+```cpp
+// does x exist?
+auto it = lower_bound(v.begin(), v.end(), x);
+bool exists = (it != v.end() && *it == x);
+
+// first index of x  (or -1)
+int first = (it != v.end() && *it == x) ? it - v.begin() : -1;
+
+// last index of x  (or -1)
+auto up = upper_bound(v.begin(), v.end(), x);
+int last = (up != v.begin() && *(up - 1) == x) ? (up - 1) - v.begin() : -1;
+```
+
+## On a map or set (member versions, also O(log n))
+```cpp
+map<int,double> m;
+auto it = m.lower_bound(key);   // first entry with key >= key
+// use m.lower_bound / m.upper_bound, NOT std::lower_bound, on tree containers
+```
+
+## When it does NOT apply
+- Range is not sorted (result is undefined).
+- The decision rule is not a simple >= or > comparison.
+  Peak finding (compare with neighbor) and rotated-array search need a custom
+  binary search with their own decision rule. The library version cannot express
+  those conditions.
+
+## Rule of thumb
+Binary search is the MEANS (a step inside a bigger algorithm) -> use the library.
+Binary search is the END (they want you to implement it) -> write it by hand.
+
+---
+
+# Problems to practice
+
+## Where lower/upper_bound is the central technique
+- Binary Search (704) warmup, can be done with lower_bound
+- Search Insert Position (35) literally lower_bound
+- Find First and Last Position of Element in Sorted Array (34) lower_bound + upper_bound
+- Count of Smaller Numbers After Self (315) counting with bounds after sorting
+- Kth Missing Positive Number (1539)
+- Time Based Key-Value Store (981) upper_bound over timestamps (Two Sigma style)
+- Find Smallest Letter Greater Than Target (744) upper_bound directly
+- Search a 2D Matrix (74) treat as sorted, binary search
+- H-Index II (275)
+
+## Where it is an auxiliary step inside a bigger algorithm
+- Longest Increasing Subsequence (300) lower_bound to place each number, O(n log n)
+- Russian Doll Envelopes (354) sort, then LIS with lower_bound
+- Maximum Length of Pair Chain (646)
+- Non-overlapping Intervals (435) sort, then greedy with search
+- Longest Increasing Subsequence variants and patience-sorting problems
+- Aggressive Cows / capacity-style "binary search on the answer" problems
+- Split Array Largest Sum (410) binary search on the answer range
+- Koko Eating Bananas (875) binary search on the answer
+
+Note: the "binary search on the answer" problems (410, 875, aggressive cows)
+usually need a hand-written binary search because the check is a custom predicate,
+not a >= lookup. Good to know they are the same family even when the library
+version does not fit.
