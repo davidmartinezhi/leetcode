@@ -83,7 +83,7 @@ public:
                     counter++;
                     j++;
                 }
-                newStr += '0' + counter;
+                newStr += to_string(counter);
                 newStr += currNum;
                 
                 if(j < str.size()){
