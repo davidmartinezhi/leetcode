@@ -1,0 +1,99 @@
+# Design Problem Framework
+
+A mental model for class/object design questions (LRU Cache, MinStack, Insert
+Delete GetRandom, etc.). These sit one level above normal LeetCode: you combine
+data structures to hit a complexity target on every operation.
+
+## The three questions to start with
+1. What are the operations, and what complexity does each one require?
+2. What is the best conceivable runtime (for each operation)?
+3. What data structure lets me do this or that in that time?
+
+## The key difference from normal LeetCode
+In a normal problem, the best conceivable runtime is ONE thing for the whole
+problem ("I have to scan the array at least once, so O(n)"). In design, EACH
+operation has its own requirement, and sometimes they compete. That tension is
+the difficulty and the point. No single structure usually satisfies all
+operations, so you combine several.
+
+## Structure brainstorming (keep this map in your head)
+When you ask "what lets me do X in O(something)?", recall what each gives:
+
+```
+hash map:            lookup / insert / delete by key in O(1)
+                     but NO order
+
+array / vector:      index access O(1)
+                     but insert/delete in the middle O(n)
+
+doubly linked list:  insert/delete at any point O(1) IF you hold the pointer
+                     but search O(n)
+
+heap:                min/max in O(1)
+                     insert/pop in O(log n)
+
+balanced BST / set:  search, insert, delete, and order in O(log n)
+                     min/max in O(log n)
+```
+
+When one operation needs something a structure does not give, find another that
+does, and combine them.
+
+> "What structure gives me this operation in the required time? If no single one
+> gives them all, which combination does, and how do I connect them?"
+
+## The full process
+1. List the operations and each one's required complexity.
+2. Best conceivable runtime per operation.
+3. Attack each operation separately: what structure makes it efficient?
+4. For the hard operation, reason why the obvious structures fail
+   (heap is O(log n), array delete-in-middle is O(n), etc.).
+5. Find the structure that meets the exact requirement.
+6. Connect the structures: how does one point into the other?
+7. Sync them: what info does each structure need to update the other?
+
+---
+
+## Worked example: LRU Cache
+
+Operations: get O(1), put O(1). Evict least-recently-used when full.
+
+1. Two operations, both O(1). The hard part is tracking use order in O(1).
+2. Lookup by key O(1) -> hash map. Order tracking O(1) -> ?
+3. A min-heap of timestamps was tempting but is O(log n) to reorder. Rejected.
+4. Need: move a used item to "most recent" and drop the "least recent", both
+   O(1). Removing from the middle in O(1) needs access to neighbors ->
+   doubly linked list.
+5. Connect: hash map stores key -> pointer to the node in the list.
+   get: find node via map (O(1)), move it in the list (O(1)).
+6. Sync: the node stores its KEY (not just value) so that on eviction you can
+   erase it from the map with cache.erase(node->key).
+
+Combination: hash map (O(1) lookup) + doubly linked list (O(1) reorder).
+Dummy first/last nodes remove the head/tail edge cases.
+
+---
+
+## Worked example: MinStack
+
+Operations: push, pop, top, getMin, all O(1).
+
+1. push/pop/top are trivially O(1) on a stack. The hard one is getMin O(1).
+2. If you only store values, getMin means scanning: O(n). Need it precomputed.
+3. The min changes on pop. If the current min leaves, you need the previous min.
+   -> store the min at each level.
+4. Structure: a stack of pairs {value, min-so-far}, or a parallel min-stack.
+5. Connect: each element carries the min of everything below it.
+6. getMin just reads the top's stored min. O(1).
+
+Combination: one stack, each entry augmented with precomputed min state.
+
+---
+
+## The recurring meta-pattern
+Decompose by operation -> pick a structure per operation -> combine when no
+single one suffices -> connect them (one holds pointers/indices into the other)
+-> keep them in sync (each side stores what it needs to update the other).
+
+Trade space for time: O(1) queries on dynamic data almost always come from
+maintaining precomputed auxiliary state that you update on every modification.
