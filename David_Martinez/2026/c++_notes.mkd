@@ -1,5 +1,7 @@
 # Notes
 
+Siempre hacer un recap de la implementación y ver los hot spots.
+
 ## auto
 
 auto es parte de la libreria estandar desde hace mas de 10 años y se usa para inferir el valor de una variable
