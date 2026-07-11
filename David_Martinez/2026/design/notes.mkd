@@ -97,3 +97,6 @@ single one suffices -> connect them (one holds pointers/indices into the other)
 
 Trade space for time: O(1) queries on dynamic data almost always come from
 maintaining precomputed auxiliary state that you update on every modification.
+
+
+Thinking about which approach in one operation makes the following operations easier is very useful also.
