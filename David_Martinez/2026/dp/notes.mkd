@@ -22,3 +22,5 @@ Trapping Rain Water:     para cada posición, el máximo a izquierda y derecha
 Puede ser bueno ir a als lecciones de los problemas que resoliv en 2023 para empapar los patrones y ver los videos de knapsack de youtube.
 
 Para tener en mente los patrones y lecciones y luego seguir con todos los problemas pero ya teniendo la teoria fresca.
+
+LUNES CHECAR NOTAS DE OTROS PROBLEMAS Y PONER AQUI LO IMPORTANTE
