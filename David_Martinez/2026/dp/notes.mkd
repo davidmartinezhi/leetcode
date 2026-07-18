@@ -11,3 +11,14 @@ Best Time to Buy/Sell:  para cada venta, el mínimo de compra previo
 Maximum Subarray:       para cada fin, la mejor suma que termina aquí (Kadane)
 Container With Water:    para cada par, maximizar área
 Trapping Rain Water:     para cada posición, el máximo a izquierda y derecha
+
+
+
+* Dependencias hacia atrás: Cuando el estado actual depende de estados futuros, es más fácil calcular los estados futuros primero y luego usarlos para calcular los estados actuales.
+* Optimización de Memoria: En algunos casos, solo necesitas mantener un subconjunto de todos los estados posibles en la memoria en un momento dado. Al recorrer de atrás hacia adelante, puedes sobrescribir estados que ya no son necesarios, ahorrando memoria.
+* Subproblemas Anidados: En problemas donde los subproblemas están anidados de una manera que el subproblema más grande necesita ser resuelto antes que los más pequeños (por ejemplo, en la programación de intervalos), es útil recorrer de atrás hacia adelante.
+* Problemas de Secuencia: En problemas donde estás tratando con secuencias (como cadenas de texto o arrays) y la solución óptima a un subproblema depende de las soluciones a los subproblemas que vienen después en la secuencia.
+
+Puede ser bueno ir a als lecciones de los problemas que resoliv en 2023 para empapar los patrones y ver los videos de knapsack de youtube.
+
+Para tener en mente los patrones y lecciones y luego seguir con todos los problemas pero ya teniendo la teoria fresca.
