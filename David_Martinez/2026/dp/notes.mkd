@@ -24,3 +24,10 @@ Puede ser bueno ir a als lecciones de los problemas que resoliv en 2023 para emp
 Para tener en mente los patrones y lecciones y luego seguir con todos los problemas pero ya teniendo la teoria fresca.
 
 LUNES CHECAR NOTAS DE OTROS PROBLEMAS Y PONER AQUI LO IMPORTANTE
+
+
+"cuántas formas/secuencias" y el orden cuenta        → target afuera
+"cuántas combinaciones/conjuntos", orden no cuenta   → nums afuera
+
+sería bueno checar las diferencias entre coin change 1 y 2. para ver diferencia entre tener target adentro y 
+afuera.
