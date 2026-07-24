@@ -31,3 +31,6 @@ LUNES CHECAR NOTAS DE OTROS PROBLEMAS Y PONER AQUI LO IMPORTANTE
 
 sería bueno checar las diferencias entre coin change 1 y 2. para ver diferencia entre tener target adentro y 
 afuera.
+
+
+Solo creas el array cuando todos los estados previos son genuinamente relevantes. Si la recurrencia mira una ventana fija hacia atrás, comprimes a esas variables. <-- HOUSE ROBBER 1 Y 2 de ejemplo
