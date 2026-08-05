@@ -87,8 +87,8 @@ public:
         brute force / optimization
             dfs or bfs
             complexity
-                runtime o(edge*nodes)  
-                space o(edge* nodes)
+                runtime o(edge+nodes)  
+                space o(nodes)
 
         walkthough    
             adjList = [
