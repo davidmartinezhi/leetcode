@@ -222,4 +222,116 @@ public:
         return clones[node->val];
 
 */
+
+    Node* cloneGraphDFS(Node* node) {
+        /*
+        45 min left
+        info
+            input
+                - reference to a node in a connected unirected graph
+
+            output
+                - deep copy of the graph
+
+
+            constraints
+                - number of nodes in the graph? [0,100]
+                - range of values each node can have? [1,100]
+                - are the values unique? yes
+
+        43 min left
+
+        example
+
+            Input: adjList = [[2,4],[1,3],[2,4],[1,3]]
+            Output: [[2,4],[1,3],[2,4],[1,3]]
+            Explanation: There are 4 nodes in the graph.
+            1st node (val = 1)'s neighbors are 2nd node (val = 2) and 4th node (val = 4).
+            2nd node (val = 2)'s neighbors are 1st node (val = 1) and 3rd node (val = 3).
+            3rd node (val = 3)'s neighbors are 2nd node (val = 2) and 4th node (val = 4).
+            4th node (val = 4)'s neighbors are 1st node (val = 1) and 3rd node (val = 3).
+
+        brute force
+            basically i have to do a dfs or bfs to traverse the graph and make a clone
+            in the meantime
+
+            I resolved this problem with bfs 2 days ago but ill try to do it
+            with dfs
+
+            complexity:
+                runtime: o(e+v)
+                memory: o(e)
+
+        optimize
+            best conceivable runtime: o(e+v)
+
+        test
+            - 1 node in graph
+            - more than one node in the graph
+
+        41 min left
+        */
+
+        if(!node) return nullptr;
+
+        stack<Node*> s;
+        unordered_set<int> visited;
+        unordered_map<int, Node*> copies;
+
+        // add init values to ds
+        visited.insert(node->val);
+        s.push(node);
+        copies[node->val] = new Node(node->val);
+
+        /*
+        adjList = [
+            [2,4],
+            [1,3],
+            [2,4],
+            [1,3]
+            ]
+        = {
+            1: [2,4],
+            2: [1,3],
+            3: [2,4],
+            4: [1,3]
+        }
+        visited= [1,2,4
+        s = [
+            
+            2
+            1
+        ]
+        copies = {
+            1 : [2, 4]
+            2 : []
+            4 : [1]
+            
+        }
+        */
+
+        while(!s.empty()){
+
+            // get top node
+            Node* curr = s.top(); s.pop();
+
+            // traverse neighbors
+            for(Node* adj : curr->neighbors){
+                if(!visited.contains(adj->val)){ // if not visited
+                    s.push(adj); // add to stack so we process original after
+                    visited.insert(adj->val); // mark as visited so its not processed again
+
+                    // create new node and add to copies dict
+                    Node* aux = new Node(adj->val);
+                    copies[adj->val] = aux;
+                }
+
+                // get copy of current node and point it to copy of adj
+                Node* currCopy = copies[curr->val];
+                currCopy->neighbors.push_back(copies[adj->val]);
+            }
+        }
+
+        return copies[node->val];
+    }
 };
