@@ -12,3 +12,7 @@ Sort Items by Groups (1203)        topological sort anidado (grupos e items)
 Hacer el clone graph con dfs ahora, y tambien hacerlo recursivo con dfs sin miedo cawn.
 
 igual checae como detectar el cyclo para saber si tenemos o no una Directed Acyclic graph
+    - I can do this with topological sort. 
+    - literal es hacer un dfs pero marcando con 2 cuando estas en un mismo run
+    - si ya regresaste del backtracking lo marcas como 1
+    si estas procesando algo con 2 y visitas un 2, significa que hay un ciclo.
