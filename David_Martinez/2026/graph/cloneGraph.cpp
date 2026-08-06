@@ -334,4 +334,28 @@ public:
 
         return copies[node->val];
     }
+
+    /*
+    Node* cloneGraph(Node* node) {
+        unordered_map<int, Node*> copies;
+        return dfs(copies, node);
+    }
+
+    Node* dfs(unordered_map<int, Node*>&copies, Node* node){
+
+        // base cases
+        if(!node) return nullptr; // no node
+        if(copies.contains(node->val)) return copies[node->val]; // node exists already
+
+        // clone and register
+        Node* clone = new Node(node->val);
+        copies[clone->val] = clone;
+
+        for(Node* adj : node->neighbors){
+            clone->neighbors.push_back(dfs(copies, adj)); // pushback the node returned
+        }
+
+        return clone;
+    }
+    */
 };
