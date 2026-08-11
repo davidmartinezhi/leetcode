@@ -18,3 +18,5 @@ igual checae como detectar el cyclo para saber si tenemos o no una Directed Acyc
     si estas procesando algo con 2 y visitas un 2, significa que hay un ciclo.
 
 Check optimal approach for pacific atlantic
+
+Ya me termine los problemas de blind 75, deberia de buscar otros problemas de grafos
